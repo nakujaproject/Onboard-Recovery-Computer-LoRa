@@ -9,7 +9,7 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/nakujaproject/easyedaTemplate.svg "Github contributors")](https://github.com/nakujaproject/easyedaTemplate/graphs/contributors)
 [![Last commit](https://img.shields.io/github/last-commit/nakujaproject/easyedaTemplate.svg "Last commit")](https://github.com/nakujaproject/easyedaTemplate/commits/master)
 
-<a href="https://github.com/nakujaproject/easyedaTemplate"><img src="assets/WIFI_LoRa_32_V2.1.pdf?raw=true" width="500px"><br/></a>
+<a href="https://github.com/nakujaproject/easyedaTemplate"><img src="assets/heltec_lora_v2.png?raw=true" width="500px"><br/></a>
 
 ## Setup
 
