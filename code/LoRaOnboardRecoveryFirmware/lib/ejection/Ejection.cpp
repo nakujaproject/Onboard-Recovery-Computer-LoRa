@@ -1,6 +1,7 @@
 #include <Ejection.h>
 
-TimerHandle_t ejectionTimerHandle = NULL;
+TimerHandle_t mainEjectionTimerHandle = NULL;
+TimerHandle_t drogueEjectionTimerHandle = NULL;
 
 // Pin to start ejection charge
 uint8_t MAIN_EJECTION_PIN = 23;
@@ -10,7 +11,7 @@ volatile bool isManualMainFired = false;
 volatile bool isManualDrogueFired = false;
 
 // TODO: carry out tests to know how much time
-const int EJECTION_PIN_ON_TIME_MS = 1000;
+const int EJECTION_PIN_ON_TIME_MS = 2000;
 
 char DROGUE_MESSAGE[] = "D";
 char MAIN_MESSAGE[] = "M";
@@ -40,14 +41,14 @@ void ejection(uint8_t ejectionPin)
     {
         digitalWrite(MAIN_EJECTION_PIN, HIGH);
         isManualMainFired = true;
-        ejectionTimerHandle = xTimerCreate("MainEjectionTimer", EJECTION_PIN_ON_TIME_MS / portTICK_PERIOD_MS, pdFALSE, (void *)0, MainEjectionTimerCallback);
-        xTimerStart(ejectionTimerHandle, portMAX_DELAY);
+        mainEjectionTimerHandle = xTimerCreate("MainEjectionTimer", EJECTION_PIN_ON_TIME_MS / portTICK_PERIOD_MS, pdFALSE, (void *)0, MainEjectionTimerCallback);
+        xTimerStart(mainEjectionTimerHandle, portMAX_DELAY);
     }
     else if (ejectionPin == DROGUE_EJECTION_PIN)
     {
         digitalWrite(DROGUE_EJECTION_PIN, HIGH);
         isManualDrogueFired = true;
-        ejectionTimerHandle = xTimerCreate("DrogueEjectionTimer", EJECTION_PIN_ON_TIME_MS / portTICK_PERIOD_MS, pdFALSE, (void *)0, DrogueEjectionTimerCallback);
-        xTimerStart(ejectionTimerHandle, portMAX_DELAY);
+        drogueEjectionTimerHandle = xTimerCreate("DrogueEjectionTimer", EJECTION_PIN_ON_TIME_MS / portTICK_PERIOD_MS, pdFALSE, (void *)0, DrogueEjectionTimerCallback);
+        xTimerStart(drogueEjectionTimerHandle, portMAX_DELAY);
     }
 }
