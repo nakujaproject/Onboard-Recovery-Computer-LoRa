@@ -9,8 +9,7 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/nakujaproject/easyedaTemplate.svg "Github contributors")](https://github.com/nakujaproject/easyedaTemplate/graphs/contributors)
 [![Last commit](https://img.shields.io/github/last-commit/nakujaproject/easyedaTemplate.svg "Last commit")](https://github.com/nakujaproject/easyedaTemplate/commits/master)
 
-
-<a href="https://github.com/nakujaproject/easyedaTemplate"><img src="pinout/example.png?raw=true" width="500px"><br/></a>
+<a href="https://github.com/nakujaproject/easyedaTemplate"><img src="assets/WIFI_LoRa_32_V2.1.pdf?raw=true" width="500px"><br/></a>
 
 ## Setup
 
@@ -18,12 +17,9 @@
 
 ### Description
 
-
 ## Tools
 
 1. [Label maker](https://github.com/xsrf/easyeda-labelmaker)
 2. [ibom extension](https://github.com/turbobabr/easyeda-ibom-extension)
 
-
 ### License
-
