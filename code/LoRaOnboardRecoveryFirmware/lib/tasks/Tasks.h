@@ -3,11 +3,10 @@
 #include "../definitions/defs.h"
 
 void sendGPSLoRaTask(void *parameter);
-void readGPSTask(void *parameter);
-void getStatusTask(void *parameter);
 void sendStatusLoRaTask(void *parameter);
-void OnReceiveTask(void *param);
-void resumeGPSTasks();
-void onReceive(int packetSize);
+void OnReceiveLoRaTask(void *param);
+void resumeGPSTask();
+void SendGPSTimerCallback(TimerHandle_t sendGPSTimerHandle);
+void SendFlightStatusTimerCallback(TimerHandle_t sendFlightStatusTimerHandle);
 
 #endif // TASKS_H

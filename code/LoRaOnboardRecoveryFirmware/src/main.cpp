@@ -10,16 +10,15 @@ const BaseType_t pro_cpu = 0;
 const BaseType_t app_cpu = 1;
 
 TaskHandle_t SendGPSLoRaTaskHandle = NULL;
-TaskHandle_t GetGPSTaskHandle = NULL;
-TaskHandle_t GetFlightStatusTaskHandle = NULL;
 TaskHandle_t SendFlightStatusLoRaTaskHandle = NULL;
-TaskHandle_t OnReceiveTaskHandle = NULL;
+TaskHandle_t OnReceiveLoRaTaskHandle = NULL;
 
-QueueHandle_t gps_queue;
-QueueHandle_t flight_status_queue;
+TimerHandle_t sendFlightStatusTimerHandle = NULL;
+TimerHandle_t sendGPSTimerHandle = NULL;
 
-const uint16_t GPS_QUEUE_LENGTH = 100;
-const uint16_t FLIGHT_STATUS_QUEUE_LENGTH = 100;
+// TODO: optimize so that LCM is very large so that they never collide
+const int GPS_TIMER_PERIOD = 300;
+const int FLIGHT_STATUS_TIMER_PERIOD = 200;
 
 void setup()
 {
@@ -27,25 +26,25 @@ void setup()
 
   setEjectionPinModes();
 
-  LoRa.onReceive(onReceive);
-  LoRa.receive();
-
   setInterruptPins();
 
   init_gps();
 
-  // create GPS queue
-  gps_queue = xQueueCreate(GPS_QUEUE_LENGTH, sizeof(GPSReadings));
-  flight_status_queue = xQueueCreate(FLIGHT_STATUS_QUEUE_LENGTH, sizeof(FlightStatus));
-
   // Create tasks on core 1
-  xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 2500, NULL, 1, &GetGPSTaskHandle, app_cpu);
-  xTaskCreatePinnedToCore(getStatusTask, "GetFlightStatusTask", 2500, NULL, 1, &GetFlightStatusTaskHandle, app_cpu);
+  xTaskCreatePinnedToCore(OnReceiveLoRaTask, "OnReceiveLoRaTask", 1500, NULL, 1, &OnReceiveLoRaTaskHandle, app_cpu);
 
   // Create tasks on core 0
-  //xTaskCreatePinnedToCore(sendGPSLoRaTask, "LoRaGPSTask", 2500, NULL, 1, &SendGPSLoRaTaskHandle, pro_cpu);
-  //xTaskCreatePinnedToCore(sendStatusLoRaTask, "SendFlightStatusTask", 2500, NULL, 1, &SendFlightStatusLoRaTaskHandle, pro_cpu);
-  //xTaskCreatePinnedToCore(OnReceiveTask, "OnReceiveTask", 1000, NULL, 1, &OnReceiveTaskHandle, pro_cpu);
+  xTaskCreatePinnedToCore(sendGPSLoRaTask, "LoRaGPSTask", 2500, NULL, 1, &SendGPSLoRaTaskHandle, pro_cpu);
+  xTaskCreatePinnedToCore(sendStatusLoRaTask, "SendFlightStatusTask", 2500, NULL, 1, &SendFlightStatusLoRaTaskHandle, pro_cpu);
+
+  // create periodic timer to send flight status data to Ground Station
+  sendFlightStatusTimerHandle = xTimerCreate("FlightStatusTimer", FLIGHT_STATUS_TIMER_PERIOD / portTICK_PERIOD_MS, pdFALSE, (void *)0, SendFlightStatusTimerCallback);
+
+  // create periodic timer to send GPS data to Ground Station
+  sendGPSTimerHandle = xTimerCreate("GPSTimer", GPS_TIMER_PERIOD / portTICK_PERIOD_MS, pdTRUE, (void *)1, SendGPSTimerCallback);
+
+  // start sending Flight Status Data periodically
+  xTimerStart(sendFlightStatusTimerHandle, portMAX_DELAY);
 
   vTaskDelete(NULL);
 }

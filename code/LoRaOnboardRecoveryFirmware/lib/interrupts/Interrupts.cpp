@@ -9,7 +9,6 @@ const uint8_t PRIMARY_MAIN_DETECT_PIN = 37;
 
 TimerHandle_t motorTimerHandle = NULL;
 extern uint8_t MAIN_EJECTION_PIN;
-extern TaskHandle_t OnReceiveTaskHandle;
 
 volatile bool isDrogueSeparated = false;
 volatile bool isMainSeparated = false;
